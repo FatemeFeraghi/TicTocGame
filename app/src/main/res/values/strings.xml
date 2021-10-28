@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TicTocGame</string>
+    <string name="action_setting">Settings</string>
+    <string name="size_of_board">3</string>
+    <string name="x">" X "</string>
+    <string name="O">" O "</string>
+</resources>
