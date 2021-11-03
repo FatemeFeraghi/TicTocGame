@@ -4,4 +4,5 @@
     <string name="size_of_board">3</string>
     <string name="x">" X "</string>
     <string name="O">" O "</string>
+    <string name="none"> " " </string>
 </resources>
