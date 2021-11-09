@@ -4,12 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -89,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if(gameStatus() == 0) {
-                        tv.setText("Turn: Player " + turn);
+                        txt_turn.setText("Turn: Player " + turn);
                     } else if(gameStatus() == -1){
-                        tv.setText("This is a draw match ");
+                        txt_turn.setText("This is a draw match ");
                         stopMatch();
                     } else {
                         txt_turn.setText(turn + "Loses!");
@@ -103,13 +107,118 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            private int gameStatus() {
-                return 0;
+            protected int gameStatus() {
+
+                // 0: continue match
+                // 1 X wins
+                // 2 O wins
+                // -1: Draw
+
+                int row = 0, colX = 0, rowO = 0, col = 0;
+
+                for(int i = 0; i < grid_size; i++){
+                    if(check_Row_Equality(i,'X'))
+                        return 1;
+                    if(check_Column_Equality(i,'X'))
+                        return 1;
+                    if(check_Row_Equality(i,'O'))
+                        return 2;
+                    if(check_Column_Equality(i,'O'))
+                        return 2;
+                    if(check_Diagonal('X'))
+                        return 1;
+                    if(check_Diagonal('O'))
+                        return 2;
+                }
+
+                boolean boardFull = true;
+                for(int i = 0; i < grid_size; i++){
+                    for(int j = 0; j < grid_size; j++){
+                        if(my_board[i][j] == ' ')
+                            boardFull = false;
+                    }
+                }
+
+                if(boardFull)
+                    return -1;
+                else
+                    return  0;
             }
 
-            private void stopMatch() {
+            protected  boolean check_Row_Equality(int r, char player){
+                int count_Equal = 0;
+
+                for (int i = 0; i < grid_size; i++){
+                    if(my_board[r][i] == player){
+                        count_Equal++;
+                    }
+                }
+                if(count_Equal == grid_size)
+                    return true;
+                else
+                    return false;
             }
+
+            protected boolean check_Column_Equality(int c, char player){
+                int count_Equal = 0;
+
+                for (int i = 0; i < grid_size; i++){
+                    if(my_board[i][c] == player){
+                        count_Equal++;
+                    }
+                }
+                if(count_Equal == grid_size)
+                    return true;
+                else
+                    return false;
+            }
+
+            protected boolean check_Diagonal(char player){
+                int count_Equal = 0, count_Equal2 = 0;
+
+                for(int i = 0; i < grid_size;i++)
+                    if(my_board[i][i] == player)
+                        count_Equal++;
+                for(int i = 0; i < grid_size;i++)
+                    if(my_board[i][grid_size - 1-i] == player)
+                        count_Equal++;
+                if(count_Equal == grid_size || count_Equal2 == grid_size)
+                    return true;
+                else
+                    return false;
+            }
+
+            protected void stopMatch() {
+                for (int i = 0; i < game_board.getChildCount(); i++) {
+                    TableRow row = (TableRow) game_board.getChildAt(i);
+                    for (int j = 0; j < row.getChildCount();j++){
+                        TextView tv = (TextView) row.getChildAt(j);
+                        tv.setOnClickListener(null);
+                    }
+                }
+            }
+
+
         };
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        //Inflate the menu;This add items to the action bar if it is present
+        getMenuInflater().inflate(R.menu.menu_board, menu);
+        return true;
+    }
+
+    //Handle action bar item clicks here.
+    //The action bar automatically handle clicks on the home button
+    //As you specify a parent activity in Android manifest
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        if(id == R.id.action_settings){
+            return true;
+        }
+        return  onOptionsItemSelected(item);
     }
 
 }
